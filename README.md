@@ -24,49 +24,51 @@ Crosscutter is a research tool that administers the DSM-5-TR Level 1 and Level 2
 | Multi-language support | ⚪ Future |
 | Exportable reports (PDF/JSON) | ⚪ Planned |
 
-## Technology Stack (Decided)
+## Technology Stack — **TBD: See [Architectural Decisions](#architectural-decisions-needed)**
 
-- **Runtime:** Node.js / TypeScript
-- **Framework:** Next.js (App Router)
-- **LLM:** OpenAI API (GPT-4o / o1) with function calling
-- **Database:** SQLite (local) / PostgreSQL (production)
-- **UI:** React + Tailwind CSS + shadcn/ui
-- **Testing:** Vitest + Playwright
+| Layer | Decision | Status |
+|-------|----------|--------|
+| Runtime / Language | TBD | 🔴 Undecided |
+| Web Framework | TBD | 🔴 Undecided |
+| LLM Provider & Model | TBD | 🔴 Undecided |
+| Database | TBD | 🔴 Undecided |
+| UI Framework / Styling | TBD | 🔴 Undecided |
+| Testing Stack | TBD | 🔴 Undecided |
+| Deployment Target | TBD | 🔴 Undecided |
 
-## Project Structure
+> **Legend:** 🟢 Decided · 🟡 In Discussion · 🔴 Undecided (blocking)
+
+## Project Structure (TBD — Depends on Stack)
 
 ```
 crosscutter/
-├── app/                    # Next.js App Router pages
-│   ├── api/               # API routes (chat, scoring, sessions)
-│   ├── assessment/        # Assessment flow pages
-│   └── layout.tsx
-├── components/            # React components
-│   ├── chat/              # Chat interface components
-│   ├── measures/          # Measure-specific components
-│   └── ui/                # shadcn/ui primitives
-├── lib/                   # Core logic
-│   ├── measures/          # DSM-5-TR measure definitions
-│   ├── scoring/           # Scoring algorithms
-│   ├── llm/               # LLM integration
-│   └── db/                # Database layer
-├── types/                 # TypeScript types
-└── public/                # Static assets
+├── TBD/                    # Structure follows framework choice
 ```
 
 ## Roadmap
 
-### Phase 1: Foundation (Current — Weeks 1-3)
+### Phase 0: Architectural Decisions (Current — Week 0)
+**Goal:** Finalize technology choices before implementation
+
+- [ ] **Issue:** Choose runtime/language (TypeScript/Node vs Python vs other)
+- [ ] **Issue:** Choose web framework (Next.js vs FastAPI vs SvelteKit vs CLI-only)
+- [ ] **Issue:** Choose LLM provider & model (OpenAI vs Anthropic vs Local vs Multi-provider)
+- [ ] **Issue:** Choose database (SQLite vs PostgreSQL vs DuckDB vs None)
+- [ ] **Issue:** Choose UI approach (React+Tailwind vs Vue vs Svelte vs HTMX vs None)
+- [ ] **Issue:** Choose testing stack
+- [ ] **Issue:** Choose deployment target (Vercel vs Render vs Fly.io vs Self-hosted)
+
+### Phase 1: Foundation (Weeks 1-3)
 **Goal:** Minimal viable chat administration of Level 1 measure
 
-- [ ] Project scaffolding (Next.js, TypeScript, Tailwind, shadcn/ui)
+- [ ] Project scaffolding (per Phase 0 decisions)
 - [ ] DSM-5-TR Level 1 Cross-Cutting Measure data model (23 items, domains, scoring rules)
-- [ ] LLM chat loop with function calling for structured item administration
+- [ ] LLM chat loop with structured item administration (function calling / tool use)
 - [ ] Basic chat UI (message history, user input, progress indicator)
 - [ ] Response capture and in-memory session state
 - [ ] Scoring engine: raw scores → severity thresholds (None/Slight/Mild/Moderate/Severe)
-- [ ] Unit tests for scoring logic (Vitest)
-- [ ] E2E test: complete Level 1 assessment flow (Playwright)
+- [ ] Unit tests for scoring logic
+- [ ] E2E test: complete Level 1 assessment flow
 
 ### Phase 2: Persistence & Polish (Weeks 4-6)
 **Goal:** Durable sessions, Level 2 measures, usable UI
@@ -83,7 +85,7 @@ crosscutter/
 ### Phase 3: Speech Interface (Weeks 7-10)
 **Goal:** Speech-to-speech interaction
 
-- [ ] Web Speech API integration (STT + TTS) as primary interface
+- [ ] STT + TTS integration (Web Speech API vs Whisper + TTS provider)
 - [ ] Fallback to text chat when speech unavailable
 - [ ] Voice selection, rate/pitch controls
 - [ ] Audio playback queue management
@@ -98,9 +100,9 @@ crosscutter/
 - [ ] Study configuration: custom measure subsets, branching rules
 - [ ] Batch import/export (CSV, REDCap-compatible)
 - [ ] Audit logging, data retention policies
-- [ ] CI/CD pipeline (GitHub Actions → Vercel/Render)
-- [ ] Load testing, error monitoring (Sentry)
-- [ ] Documentation site (Nextra or Mintlify)
+- [ ] CI/CD pipeline
+- [ ] Load testing, error monitoring
+- [ ] Documentation site
 
 ### Phase 5: Research Extensions (Ongoing)
 **Goal:** Domain-specific adaptations
@@ -111,28 +113,34 @@ crosscutter/
 - [ ] Plugin architecture for custom measures
 - [ ] Multi-site study coordination
 
+## Architectural Decisions Needed
+
+These are open questions blocking Phase 1. Each should become a bead/issue for discussion.
+
+| # | Decision | Options | Considerations |
+|---|----------|---------|----------------|
+| 1 | **Runtime / Language** | TypeScript/Node · Python · Rust · Go | Team familiarity, LLM SDK maturity, ecosystem |
+| 2 | **Web Framework** | Next.js · FastAPI · SvelteKit · Hono · CLI-only | SSR needs, API vs serverless, bundle size |
+| 3 | **LLM Provider** | OpenAI · Anthropic · Local (Ollama/llama.cpp) · Multi (Vercel AI SDK) | Cost, latency, privacy, function calling quality |
+| 4 | **Database** | SQLite · PostgreSQL · DuckDB · File (JSONL) · None (ephemeral) | Persistence needs, concurrent users, analytics |
+| 5 | **UI Framework** | React+Tailwind · Vue · Svelte · HTMX · Plain HTML | Team skill, interactivity level, bundle size |
+| 6 | **Testing** | Vitest+Playwright · Jest · Pytest · None yet | Coverage goals, E2E priority, CI speed |
+| 7 | **Deployment** | Vercel · Render · Fly.io · Railway · Self-hosted | Cost, scaling, HTTPS, custom domains |
+
 ## Disclaimer
 
 > This project is not a validated clinical instrument. It is not intended for diagnosis or treatment and is not a substitute for professional clinical judgement. The DSM-5-TR Cross-Cutting Symptom Measures are copyrighted by the American Psychiatric Association; this implementation is for personal research use only.
 
-## Development
+## Development (TBD)
 
 ```bash
-# Install dependencies
-npm install
-
-# Run dev server
-npm run dev
-
-# Run tests
-npm run test        # Unit tests
-npm run test:e2e    # Playwright E2E
-
-# Type check
-npm run typecheck
-
-# Lint
-npm run lint
+# TBD — Depends on Phase 0 decisions
+# Example for Node/Next.js:
+# npm install
+# npm run dev
+# npm run test
+# npm run typecheck
+# npm run lint
 ```
 
 ## License
