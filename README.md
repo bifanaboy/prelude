@@ -4,7 +4,7 @@ Administers the DSM-5-TR Cross Cutting Measures as a web app via an LLM-powered 
 
 ## Status
 
-**Active Development** — Core chat-based administration in progress. See [Roadmap](#roadmap) for current phase.
+**Active Development — MVP Sprint** — Milestone 1 (Likert scale online) in progress. See [Roadmap](#roadmap) for current phase.
 
 ## Overview
 
@@ -12,87 +12,109 @@ Crosscutter is a research tool that administers the DSM-5-TR Level 1 and Level 2
 
 **Intended Use:** Personal research only. This is **not** a clinical or diagnostic tool and does not replace professional clinical judgment.
 
-## Features (Planned / In Progress)
+## Features
 
-| Feature | Status |
-|---------|--------|
-| Chat-based DSM-5-TR Level 1 Cross-Cutting Measure administration | 🟡 In Progress |
-| Level 2 domain-specific follow-up measures | ⚪ Planned |
-| Response scoring and severity classification | ⚪ Planned |
-| Session persistence and history | ⚪ Planned |
-| Speech-to-speech interaction (STT/TTS) | ⚪ Future |
-| Multi-language support | ⚪ Future |
-| Exportable reports (PDF/JSON) | ⚪ Planned |
+| Feature | Status | Milestone |
+|---------|--------|-----------|
+| DSM-5-TR Level 1 Cross-Cutting Measure (23-item Likert scale) | 🟡 In Progress | 1 |
+| Chat-based administration with LLM | 🟡 In Progress | 2 |
+| Response scoring and severity classification | ⚪ Planned | 2 |
+| Session persistence and history | ⚪ Planned | 2 |
+| Level 2 domain-specific follow-up measures | ⚪ Planned | 2 |
+| Speech-to-speech interaction (STT/TTS) | ⚪ Future | 3 |
+| Multi-language support | ⚪ Future | 3 |
+| Exportable reports (PDF/JSON) | ⚪ Planned | 2 |
 
-## Technology Stack — **TBD: See [Architectural Decisions](#architectural-decisions-needed)**
+## Technology Stack (Decided)
 
 | Layer | Decision | Status |
 |-------|----------|--------|
-| Runtime / Language | TBD | 🔴 Undecided |
-| Web Framework | TBD | 🔴 Undecided |
-| LLM Provider & Model | TBD | 🔴 Undecided |
-| Database | TBD | 🔴 Undecided |
-| UI Framework / Styling | TBD | 🔴 Undecided |
-| Testing Stack | TBD | 🔴 Undecided |
-| Deployment Target | TBD | 🔴 Undecided |
+| Runtime / Language | TypeScript / Node.js | 🟢 Decided |
+| Web Framework | Next.js (App Router) | 🟢 Decided |
+| LLM Provider & Model | OpenAI GPT-4o (via Vercel AI SDK) | 🟢 Decided |
+| Database | SQLite (dev) → PostgreSQL (Render, via Prisma) | 🟢 Decided |
+| UI Framework / Styling | React + Tailwind CSS + shadcn/ui | 🟢 Decided |
+| Testing Stack | Vitest + Playwright | 🟢 Decided |
+| Deployment Target | Render (Next.js + Managed PostgreSQL) | 🟢 Decided |
 
 > **Legend:** 🟢 Decided · 🟡 In Discussion · 🔴 Undecided (blocking)
 
-## Project Structure (TBD — Depends on Stack)
+## Project Structure
 
 ```
 crosscutter/
-├── TBD/                    # Structure follows framework choice
+├── app/                    # Next.js App Router pages
+│   ├── api/               # API routes (chat, scoring, sessions)
+│   ├── assessment/        # Assessment flow pages
+│   └── layout.tsx
+├── components/            # React components
+│   ├── chat/              # Chat interface components
+│   ├── measures/          # Measure-specific components
+│   └── ui/                # shadcn/ui primitives
+├── lib/                   # Core logic
+│   ├── measures/          # DSM-5-TR measure definitions
+│   ├── scoring/           # Scoring algorithms
+│   ├── llm/               # LLM integration
+│   └── db/                # Database layer (Prisma)
+├── prisma/                # Prisma schema & migrations
+├── types/                 # TypeScript types
+├── e2e/                   # Playwright E2E tests
+└── public/                # Static assets
 ```
 
 ## Roadmap
 
-### Phase 0: Architectural Decisions (Current — Week 0)
-**Goal:** Finalize technology choices before implementation
+### Milestone 1: Likert Scale Online (Week 1-2)
+**Goal:** DSM-5-TR Level 1 measure rendered as interactive Likert scale (web form)
 
-- [ ] **Issue:** Choose runtime/language (TypeScript/Node vs Python vs other)
-- [ ] **Issue:** Choose web framework (Next.js vs FastAPI vs SvelteKit vs CLI-only)
-- [ ] **Issue:** Choose LLM provider & model (OpenAI vs Anthropic vs Local vs Multi-provider)
-- [ ] **Issue:** Choose database (SQLite vs PostgreSQL vs DuckDB vs None)
-- [ ] **Issue:** Choose UI approach (React+Tailwind vs Vue vs Svelte vs HTMX vs None)
-- [ ] **Issue:** Choose testing stack
-- [ ] **Issue:** Choose deployment target (Vercel vs Render vs Fly.io vs Self-hosted)
+- [ ] Project scaffolding (Next.js, TypeScript, Tailwind, shadcn/ui, Prisma)
+- [ ] DSM-5-TR Level 1 Cross-Cutting Measure data model (23 items, 13 domains, scoring rules)
+- [ ] Likert scale UI component (0-4 scale: None/Slight/Mild/Moderate/Severe)
+- [ ] Form validation and progress tracking
+- [ ] In-memory response capture
+- [ ] Scoring engine: raw scores → severity thresholds per domain
+- [ ] Unit tests for scoring logic (Vitest)
+- [ ] Deploy to Render (static form, no chat yet)
 
-### Phase 1: Foundation (Weeks 1-3)
-**Goal:** Minimal viable chat administration of Level 1 measure
+**Deliverable:** Working web form at `https://crosscutter.onrender.com` administering the 23-item Level 1 measure with instant scoring.
 
-- [ ] Project scaffolding (per Phase 0 decisions)
-- [ ] DSM-5-TR Level 1 Cross-Cutting Measure data model (23 items, domains, scoring rules)
-- [ ] LLM chat loop with structured item administration (function calling / tool use)
-- [ ] Basic chat UI (message history, user input, progress indicator)
-- [ ] Response capture and in-memory session state
-- [ ] Scoring engine: raw scores → severity thresholds (None/Slight/Mild/Moderate/Severe)
-- [ ] Unit tests for scoring logic
-- [ ] E2E test: complete Level 1 assessment flow
+---
 
-### Phase 2: Persistence & Polish (Weeks 4-6)
-**Goal:** Durable sessions, Level 2 measures, usable UI
+### Milestone 2: Chatbot Administration (Week 3-4)
+**Goal:** LLM-powered conversational administration of Level 1 + Level 2 measures
 
-- [ ] Database schema (sessions, responses, scores, users)
-- [ ] Session CRUD: create, resume, list, export
-- [ ] Level 2 domain-specific measures (12 domains: depression, anger, mania, anxiety, somatic, suicidal ideation, psychosis, sleep, memory, repetitive thoughts, dissociation, personality functioning)
+- [ ] LLM chat loop with structured item administration (Vercel AI SDK `streamText` + tool use)
+- [ ] Chat UI: message history, streaming responses, user input, progress indicator
+- [ ] Function calling schema for DSM item administration (present item → capture response → next)
 - [ ] Conditional branching: Level 1 domain elevation → auto-administer corresponding Level 2
+- [ ] Level 2 domain-specific measures (12 domains: depression, anger, mania, anxiety, somatic, suicidal ideation, psychosis, sleep, memory, repetitive thoughts, dissociation, personality functioning)
+- [ ] Session persistence (Prisma + SQLite/PostgreSQL): create, resume, list, export
 - [ ] Results dashboard: domain scores, severity badges, longitudinal tracking
 - [ ] Export: JSON + PDF report generation
+- [ ] E2E test: complete Level 1 + conditional Level 2 assessment flow (Playwright)
 - [ ] Accessibility audit (WCAG 2.1 AA)
 - [ ] Responsive design (mobile-first)
 
-### Phase 3: Speech Interface (Weeks 7-10)
-**Goal:** Speech-to-speech interaction
+**Deliverable:** Full chat-based assessment at `https://crosscutter.onrender.com` with persistent sessions and conditional Level 2 follow-up.
 
-- [ ] STT + TTS integration (Web Speech API vs Whisper + TTS provider)
-- [ ] Fallback to text chat when speech unavailable
+---
+
+### Milestone 3: Speech-to-Speech (Week 5-6)
+**Goal:** Voice-driven administration for hands-free / accessibility use cases
+
+- [ ] STT + TTS integration (Web Speech API primary; Whisper + TTS provider fallback)
 - [ ] Voice selection, rate/pitch controls
-- [ ] Audio playback queue management
-- [ ] Noise handling, silence detection, barge-in support
+- [ ] Audio playback queue management (interruptible, barge-in support)
+- [ ] Silence detection, noise handling
+- [ ] Fallback to text chat when speech unavailable
 - [ ] Mobile Safari / Chrome compatibility matrix
+- [ ] E2E test: complete voice-driven assessment flow
 
-### Phase 4: Hardening & Extensibility (Weeks 11-14)
+**Deliverable:** Speech-enabled assessment at `https://crosscutter.onrender.com` with seamless text/voice switching.
+
+---
+
+### Phase 4: Hardening & Extensibility (Week 7-10)
 **Goal:** Production readiness, researcher features
 
 - [ ] Authentication (magic link / OAuth) for multi-user support
@@ -100,9 +122,11 @@ crosscutter/
 - [ ] Study configuration: custom measure subsets, branching rules
 - [ ] Batch import/export (CSV, REDCap-compatible)
 - [ ] Audit logging, data retention policies
-- [ ] CI/CD pipeline
-- [ ] Load testing, error monitoring
+- [ ] CI/CD pipeline (GitHub Actions → Render)
+- [ ] Load testing, error monitoring (Sentry)
 - [ ] Documentation site
+
+---
 
 ### Phase 5: Research Extensions (Ongoing)
 **Goal:** Domain-specific adaptations
@@ -113,35 +137,64 @@ crosscutter/
 - [ ] Plugin architecture for custom measures
 - [ ] Multi-site study coordination
 
-## Architectural Decisions Needed
+## Architectural Decisions (Resolved)
 
-These are open questions blocking Phase 1. Each should become a bead/issue for discussion.
+All Phase 0 decisions resolved via GitHub issues:
 
-| # | Decision | Options | Considerations |
-|---|----------|---------|----------------|
-| 1 | **Runtime / Language** | TypeScript/Node · Python · Rust · Go | Team familiarity, LLM SDK maturity, ecosystem |
-| 2 | **Web Framework** | Next.js · FastAPI · SvelteKit · Hono · CLI-only | SSR needs, API vs serverless, bundle size |
-| 3 | **LLM Provider** | OpenAI · Anthropic · Local (Ollama/llama.cpp) · Multi (Vercel AI SDK) | Cost, latency, privacy, function calling quality |
-| 4 | **Database** | SQLite · PostgreSQL · DuckDB · File (JSONL) · None (ephemeral) | Persistence needs, concurrent users, analytics |
-| 5 | **UI Framework** | React+Tailwind · Vue · Svelte · HTMX · Plain HTML | Team skill, interactivity level, bundle size |
-| 6 | **Testing** | Vitest+Playwright · Jest · Pytest · None yet | Coverage goals, E2E priority, CI speed |
-| 7 | **Deployment** | Vercel · Render · Fly.io · Railway · Self-hosted | Cost, scaling, HTTPS, custom domains |
+| # | Decision | Resolution | Issue |
+|---|----------|------------|-------|
+| 1 | Runtime / Language | TypeScript / Node.js | [#7](https://github.com/bifanaboy/prelude/issues/7) |
+| 2 | Web Framework | Next.js (App Router) | [#8](https://github.com/bifanaboy/prelude/issues/8) |
+| 3 | LLM Provider | OpenAI GPT-4o (Vercel AI SDK) | [#9](https://github.com/bifanaboy/prelude/issues/9) |
+| 4 | Database | SQLite → PostgreSQL (Prisma) | [#10](https://github.com/bifanaboy/prelude/issues/10) |
+| 5 | UI Framework | React + Tailwind + shadcn/ui | [#11](https://github.com/bifanaboy/prelude/issues/11) |
+| 6 | Testing | Vitest + Playwright | [#12](https://github.com/bifanaboy/prelude/issues/12) |
+| 7 | Deployment | Render (Next.js + Managed PG) | [#13](https://github.com/bifanaboy/prelude/issues/13) |
 
 ## Disclaimer
 
 > This project is not a validated clinical instrument. It is not intended for diagnosis or treatment and is not a substitute for professional clinical judgement. The DSM-5-TR Cross-Cutting Symptom Measures are copyrighted by the American Psychiatric Association; this implementation is for personal research use only.
 
-## Development (TBD)
+## Development
 
 ```bash
-# TBD — Depends on Phase 0 decisions
-# Example for Node/Next.js:
-# npm install
-# npm run dev
-# npm run test
-# npm run typecheck
-# npm run lint
+# Install dependencies
+npm install
+
+# Set up environment
+cp .env.example .env
+# Add OPENAI_API_KEY to .env
+
+# Database setup (SQLite for local dev)
+npx prisma generate
+npx prisma db push
+
+# Run dev server
+npm run dev
+
+# Run tests
+npm run test        # Unit tests (Vitest)
+npm run test:e2e    # Playwright E2E
+
+# Type check
+npm run typecheck
+
+# Lint
+npm run lint
 ```
+
+## Deployment (Render)
+
+1. Connect GitHub repository to Render
+2. Render auto-detects Next.js (uses `render.yaml` for config)
+3. Add Managed PostgreSQL database
+4. Set environment variables:
+   - `OPENAI_API_KEY` — OpenAI API key
+   - `DATABASE_URL` — Auto-provided by Render PostgreSQL
+   - `NEXTAUTH_SECRET` — Generate with `openssl rand -base64 32`
+5. Deploy
+
+`render.yaml` defines the web service and database for reproducible infrastructure.
 
 ## License
 

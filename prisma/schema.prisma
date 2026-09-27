@@ -1,0 +1,43 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  completedAt DateTime?
+  currentMeasure String? // "level1" | "level2:{domain}"
+  currentItemIndex Int @default(0)
+  responses Response[]
+  scores Score[]
+}
+
+model Response {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  measure   String   // "level1" | "level2:{domain}"
+  itemId    String   // e.g., "LEVEL1_01", "LEVEL2_DEPRESSION_01"
+  domain    String   // e.g., "depression", "anger", "substance_use"
+  value     Int      // 0-4 Likert scale
+  createdAt DateTime @default(now())
+}
+
+model Score {
+  id        String   @id @default(cuid())
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  measure   String
+  domain    String
+  rawScore  Int
+  severity  String   // "none" | "slight" | "mild" | "moderate" | "severe"
+  createdAt DateTime @default(now())
+
+  @@unique([sessionId, domain])
+}
