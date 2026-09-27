@@ -7,14 +7,14 @@ describe('Scoring Engine', () => {
   describe('calculateDomainScores', () => {
     it('calculates correct raw scores for each domain', () => {
       const responses: ResponseType[] = [
-        { itemId: 'LEVEL1_01', value: 2, domain: 'depression' },
-        { itemId: 'LEVEL1_02', value: 3, domain: 'depression' },
-        { itemId: 'LEVEL1_03', value: 1, domain: 'anger' },
-        { itemId: 'LEVEL1_04', value: 0, domain: 'mania' },
-        { itemId: 'LEVEL1_05', value: 0, domain: 'mania' },
-        { itemId: 'LEVEL1_06', value: 2, domain: 'anxiety' },
-        { itemId: 'LEVEL1_07', value: 1, domain: 'anxiety' },
-        { itemId: 'LEVEL1_08', value: 0, domain: 'anxiety' },
+        { itemId: 'LEVEL1_01', value: 2, domain: 'depression', measure: 'level1' },
+        { itemId: 'LEVEL1_02', value: 3, domain: 'depression', measure: 'level1' },
+        { itemId: 'LEVEL1_03', value: 1, domain: 'anger', measure: 'level1' },
+        { itemId: 'LEVEL1_04', value: 0, domain: 'mania', measure: 'level1' },
+        { itemId: 'LEVEL1_05', value: 0, domain: 'mania', measure: 'level1' },
+        { itemId: 'LEVEL1_06', value: 2, domain: 'anxiety', measure: 'level1' },
+        { itemId: 'LEVEL1_07', value: 1, domain: 'anxiety', measure: 'level1' },
+        { itemId: 'LEVEL1_08', value: 0, domain: 'anxiety', measure: 'level1' },
       ]
 
       const scores = calculateDomainScores(LEVEL1_MEASURE, responses)
@@ -43,7 +43,7 @@ describe('Scoring Engine', () => {
 
     it('calculates severe correctly', () => {
       const responses: ResponseType[] = [
-        { itemId: 'LEVEL1_11', value: 4, domain: 'suicidal_ideation' },
+        { itemId: 'LEVEL1_11', value: 4, domain: 'suicidal_ideation', measure: 'level1' },
       ]
       const scores = calculateDomainScores(LEVEL1_MEASURE, responses)
       const siScore = scores.find(s => s.domain === 'suicidal_ideation')
@@ -55,7 +55,7 @@ describe('Scoring Engine', () => {
     it('triggers Level 2 for domains meeting threshold', () => {
       const level1Scores = [
         { domain: 'depression', rawScore: 5, severity: 'mild' as const },
-        { domain: 'anxiety', rawScore: 3, severity: 'slight' as const },
+        { domain: 'anxiety', rawScore: 5, severity: 'mild' as const },
         { domain: 'suicidal_ideation', rawScore: 1, severity: 'slight' as const },
         { domain: 'anger', rawScore: 0, severity: 'none' as const },
       ]
